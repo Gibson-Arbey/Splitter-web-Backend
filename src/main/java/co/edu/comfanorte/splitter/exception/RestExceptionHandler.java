@@ -2,6 +2,7 @@ package co.edu.comfanorte.splitter.exception;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -28,5 +29,13 @@ public class RestExceptionHandler {
         });
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
             "{\n \"type\": \"error\" \n \"msg\": \""+ errors.toString().trim() + "\"\n}");
+    }
+
+    @ExceptionHandler(AccessDeniedException.class)
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    @ResponseBody
+    public ResponseEntity<String> handleAccessDeniedException(AccessDeniedException ex) {
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(
+            "{\n \"type\": \"error\" \n \"msg\": \"" + "Acceso denegado." + "\"\n}");
     }
 }

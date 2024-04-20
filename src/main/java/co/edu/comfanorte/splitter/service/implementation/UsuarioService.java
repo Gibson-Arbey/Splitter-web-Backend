@@ -11,10 +11,16 @@ import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import co.edu.comfanorte.splitter.exception.UsuarioException;
+import co.edu.comfanorte.splitter.model.entity.CursoEntity;
+import co.edu.comfanorte.splitter.model.entity.UsuarioCursoEntity;
+import co.edu.comfanorte.splitter.model.entity.UsuarioCursoKey;
 import co.edu.comfanorte.splitter.model.entity.UsuarioEntity;
+import co.edu.comfanorte.splitter.repository.CursoRepository;
 import co.edu.comfanorte.splitter.repository.RolRepository;
+import co.edu.comfanorte.splitter.repository.UsuarioCursoRepository;
 import co.edu.comfanorte.splitter.repository.UsuarioRepository;
 import co.edu.comfanorte.splitter.service.interfaces.UsuarioInterface;
 
@@ -26,6 +32,12 @@ public class UsuarioService implements UsuarioInterface{
     
     @Autowired
     private  RolRepository rolRepository;
+
+    @Autowired
+    private CursoRepository cursoRepository;
+
+    @Autowired
+    private UsuarioCursoRepository usuarioCursoRepository;
     
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
@@ -43,19 +55,34 @@ public class UsuarioService implements UsuarioInterface{
     }
 
 	@Override
-	public void guardarUsuario(UsuarioEntity usuarioEntity) {
+    @Transactional(rollbackFor = Exception.class)
+	public void guardarUsuario(UsuarioEntity usuarioEntity, String curso) {
 		if (usuarioRepository.findByCorreo(usuarioEntity.getCorreo()).isPresent()) {
-            throw new UsuarioException("El correo electronico ya existe");
-        }
-
-        if(usuarioEntity.getContrasena().length() < 8){
-            throw new UsuarioException("La contraseña debe tener minimo 8 caracteres");
+            throw new UsuarioException("El correo electronico ya existe.");
         }
         
         try {
-
+            //Guardar estudiante
             usuarioEntity.setRol(rolRepository.findByNombre("ROL_ESTUDIANTE"));
-            usuarioRepository.save(usuarioEntity);
+            UsuarioEntity usuarioDB = usuarioRepository.save(usuarioEntity);
+
+            //Buscar curso
+            Optional<CursoEntity> cursoOptional = cursoRepository.findByNombre(curso);
+            if (!cursoOptional.isPresent()) {
+                throw new UsuarioException("El curso no fue encontrado.");
+            }
+
+            //Crear llave primaria UsuarioCurso
+            UsuarioCursoKey usuarioCursoKey = new UsuarioCursoKey();
+            usuarioCursoKey.setUsuarioId(usuarioDB.getId());
+            usuarioCursoKey.setCursoId(cursoOptional.get().getId());
+
+            //Guardar relacion UsuarioCurso
+            UsuarioCursoEntity usuarioCurso = new UsuarioCursoEntity();
+            usuarioCurso.setId(usuarioCursoKey);
+            usuarioCurso.setUsuario(usuarioEntity);
+            usuarioCurso.setCurso(cursoOptional.get());
+            usuarioCursoRepository.save(usuarioCurso);
         } catch (Exception e) {
             throw new RuntimeException("Error al guardar al usuario:" + e.getMessage());
         }

@@ -54,7 +54,7 @@ public class SecurityConfig {
                     auth.requestMatchers("/**").permitAll();
                     // auth.requestMatchers("/").hasAnyAuthority("ROL_ESTUDIANTE", "ROL_PROFESOR");
                     // auth.requestMatchers("/").hasAuthority("ROL_ESTUDIANTE");
-                    // auth.requestMatchers("/usuario/guardarEstudiante").hasAuthority("ROL_PROFESOR");
+                    auth.requestMatchers("/usuario/guardarEstudiante").hasAuthority("ROL_PROFESOR");
                     auth.anyRequest().authenticated();
                 })
                 .sessionManagement(session -> {

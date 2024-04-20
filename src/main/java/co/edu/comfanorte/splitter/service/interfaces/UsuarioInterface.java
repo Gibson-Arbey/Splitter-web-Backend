@@ -9,7 +9,7 @@ import co.edu.comfanorte.splitter.model.entity.UsuarioEntity;
 
 public interface UsuarioInterface extends UserDetailsService{
 
-    public void guardarUsuario(UsuarioEntity usuarioEntity);
+    public void guardarUsuario(UsuarioEntity usuarioEntity, String curso);
 
     public void cambiarContrasenia(String email, String contrasenia, String contraseniaEncriptada);
 

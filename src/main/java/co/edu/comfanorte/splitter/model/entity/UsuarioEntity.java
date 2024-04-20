@@ -1,19 +1,19 @@
 package co.edu.comfanorte.splitter.model.entity;
 
-import java.util.Set;
+import java.util.List;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Index;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.JoinTable;
-import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.AllArgsConstructor;
@@ -37,7 +37,7 @@ public class UsuarioEntity {
      */
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
-    private Integer idUsuario;
+    private Integer id;
 
     /* *
      * Nombres del usuario
@@ -74,8 +74,7 @@ public class UsuarioEntity {
     @JoinColumn(name = "rol_id", nullable = false)
     private RolEntity rol;
 
-    @ManyToMany(fetch = FetchType.EAGER, targetEntity = CursoEntity.class, cascade = CascadeType.PERSIST)
-    @JoinTable(name = "usuario_curso", joinColumns = @JoinColumn(name = "usuario_id"), inverseJoinColumns = @JoinColumn(name = "curso_id"))
-    private Set<CursoEntity> cursos;
-
+    @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
+    private List<UsuarioCursoEntity> usuarioCursos;
 }

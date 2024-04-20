@@ -4,6 +4,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -31,14 +32,15 @@ public class UsuarioController {
 
 
     @PostMapping("/guardarEstudiante")
+    @PreAuthorize("hasAuthority('ROL_PROFESOR')")
     public ResponseEntity<String> guardarEstudiante(@Valid @RequestBody UsuarioDTO usuarioDTO) {
         try {
             UsuarioEntity usuarioEntity = new UsuarioEntity();
             BeanUtils.copyProperties(usuarioDTO, usuarioEntity);
             usuarioEntity.setContrasena(passwordEncoder.encode(usuarioDTO.getContrasenaDesencriptada()));
-            usuarioService.guardarUsuario(usuarioEntity);
-            String response = "Estudiante registrado con exito";
-            return ResponseEntity.ok().body("{\n \"type\": \"error\" \n \"msg\": " + response + "\"\n}");
+            usuarioService.guardarUsuario(usuarioEntity, usuarioDTO.getCurso());
+            String response = "Estudiante registrado con exito.";
+            return ResponseEntity.ok().body("{\n \"type\": \"success\" \n \"msg\": \""+ response + "\"\n}");
         } catch (Exception e) {
             return ResponseEntity.badRequest().body("{\n \"type\": \"error\" \n \"msg\": \""+ e.getMessage() + "\"\n}");
         }
