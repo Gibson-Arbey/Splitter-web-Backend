@@ -21,3 +21,5 @@ INSERT IGNORE INTO rol (id,nombre) VALUES
 (1,"A"),
 (2,"B"),
 (3,"C");
+
+-- "$10$SeF/ssj0ROeXxEJM7S2Yceipu/Qa4bchiZBTI3jw7J7kWZfhlKmwC"

@@ -8,4 +8,5 @@ import co.edu.comfanorte.splitter.model.entity.RolEntity;
 @Repository
 public interface RolRepository extends JpaRepository<RolEntity, Integer> {
 
+    RolEntity findByNombre(String nombre);
 }
