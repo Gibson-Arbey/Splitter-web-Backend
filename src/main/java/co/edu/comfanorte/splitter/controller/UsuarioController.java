@@ -8,9 +8,13 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import co.edu.comfanorte.splitter.model.dto.UsuarioDTO;
@@ -41,6 +45,32 @@ public class UsuarioController {
             usuarioService.guardarUsuario(usuarioEntity, usuarioDTO.getCurso());
             String response = "Estudiante registrado con exito.";
             return ResponseEntity.ok().body("{\n \"type\": \"success\" \n \"msg\": \""+ response + "\"\n}");
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("{\n \"type\": \"error\" \n \"msg\": \""+ e.getMessage() + "\"\n}");
+        }
+    }
+
+    @GetMapping("/detalle")
+    @PreAuthorize("hasAuthority('ROL_PROFESOR')")
+    public ResponseEntity<Object> detalleUsuario(@RequestParam(value = "correo" , required = true) String correo) {
+        try {
+            UsuarioEntity usuarioEntity = usuarioService.buscarUsuarioEmail(correo);
+            return ResponseEntity.ok().body("{\n \"type\": \"success\" \n \"msg\": "+ usuarioEntity.toString() + "\n}");
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("{\n \"type\": \"error\" \n \"msg\": \""+ e.getMessage() + "\"\n}");
+        }
+    }
+
+    @PutMapping("/cambiar/{id}")
+    @PreAuthorize("hasAuthority('ROL_PROFESOR')")
+    public ResponseEntity<Object> cambiarContraseña(@PathVariable("id") Integer id, @RequestBody String contrasena) {
+        try {
+            if(contrasena == null || contrasena.length() < 8) {
+                return ResponseEntity.badRequest().body("{\n \"type\": \"error\" \n \"msg\": \"La contraseña debe tener minimo 8 caracteres.\"\n}");  
+            }
+            String contrasenaEncriptada = passwordEncoder.encode(contrasena);
+            usuarioService.cambiarContrasenia(id, contrasenaEncriptada);
+            return ResponseEntity.ok().body("{\n \"type\": \"success\" \n \"msg\": "+ "\"Contraseña cambiada exitosamente\"" + "\n}");
         } catch (Exception e) {
             return ResponseEntity.badRequest().body("{\n \"type\": \"error\" \n \"msg\": \""+ e.getMessage() + "\"\n}");
         }

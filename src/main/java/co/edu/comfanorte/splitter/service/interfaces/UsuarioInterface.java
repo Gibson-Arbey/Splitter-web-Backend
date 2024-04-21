@@ -11,9 +11,9 @@ public interface UsuarioInterface extends UserDetailsService{
 
     public void guardarUsuario(UsuarioEntity usuarioEntity, String curso);
 
-    public void cambiarContrasenia(String email, String contrasenia, String contraseniaEncriptada);
+    public void cambiarContrasenia(Integer id, String contrasena);
 
-    public UsuarioEntity buscarUsuarioEmail(String email);
+    public UsuarioEntity buscarUsuarioEmail(String correo);
 
     public Optional<List<UsuarioEntity>>  listarEstudiantes();
 }

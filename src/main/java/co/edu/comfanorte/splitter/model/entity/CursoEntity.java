@@ -2,6 +2,8 @@ package co.edu.comfanorte.splitter.model.entity;
 
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -40,5 +42,6 @@ public class CursoEntity {
     private String nombre;
 
     @OneToMany(mappedBy = "curso", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
     private List<UsuarioCursoEntity> usuarioCursos;
 }
