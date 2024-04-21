@@ -122,7 +122,7 @@ public class UsuarioService implements UsuarioInterface{
 	}
 
 	@Override
-	public Optional<List<UsuarioEntity>> listarEstudiantes() {
+	public List<UsuarioEntity> listarEstudiantes() {
 		// TODO Auto-generated method stub
 		throw new UnsupportedOperationException("Unimplemented method 'listarEstudiantes'");
 	}

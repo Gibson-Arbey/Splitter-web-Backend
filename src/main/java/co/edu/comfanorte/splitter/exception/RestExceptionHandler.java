@@ -23,7 +23,7 @@ public class RestExceptionHandler {
 
     @ExceptionHandler(value = { CursoException.class })
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ResponseEntity<ResponseDTO> handleCursoException(UsuarioException ex) {
+    public ResponseEntity<ResponseDTO> handleCursoException(CursoException ex) {
         return ResponseEntity.badRequest().body(new ResponseDTO("error", ex.getMessage()));
     }
 

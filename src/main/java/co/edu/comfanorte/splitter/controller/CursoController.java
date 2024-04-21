@@ -10,9 +10,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import co.edu.comfanorte.splitter.model.dto.CursoDTO;
+import co.edu.comfanorte.splitter.model.dto.ResponseDTO;
 import co.edu.comfanorte.splitter.model.entity.CursoEntity;
-import co.edu.comfanorte.splitter.model.entity.UsuarioCursoEntity;
 import co.edu.comfanorte.splitter.service.implementation.CursoService;
 
 @RestController
@@ -26,8 +25,14 @@ public class CursoController {
 
     @GetMapping("/{usuarioId}")
     @PreAuthorize("hasAuthority('ROL_PROFESOR')")
-    public ResponseEntity<List<CursoEntity>> getCursosByUsuarioId(@PathVariable Integer usuarioId) {
-        List<CursoEntity> cursos = cursoService.getCursosByUsuarioId(usuarioId);
-        return ResponseEntity.ok(cursos);
+    public ResponseEntity<ResponseDTO> getCursosByUsuarioId(@PathVariable Integer usuarioId) {
+        try {
+            List<CursoEntity> cursos = cursoService.getCursosByUsuarioId(usuarioId);
+            return ResponseEntity.ok().body(new ResponseDTO("success", cursos));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(new ResponseDTO("error", e.getMessage()));
+        }
+        
+
     }
 }
