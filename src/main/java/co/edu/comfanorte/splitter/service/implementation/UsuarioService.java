@@ -89,15 +89,35 @@ public class UsuarioService implements UsuarioInterface{
 	}
 
 	@Override
-	public void cambiarContrasenia(String email, String contrasenia, String contraseniaEncriptada) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException("Unimplemented method 'cambiarContrasenia'");
+	public void cambiarContrasenia(Integer id, String contrasena) {
+		try {
+            Optional<UsuarioEntity> usuarioOptional = usuarioRepository.findById(id);
+
+            if (!usuarioOptional.isPresent()) {
+            throw new UsuarioException("El usuario no fue encontrado.");
+            }
+            UsuarioEntity usuarioEntity = usuarioOptional.get();
+            usuarioEntity.setContrasena(contrasena);
+            usuarioRepository.save(usuarioEntity);
+        } catch (Exception e) {
+            throw new RuntimeException("Error al cambiar contraseña:" + e.getMessage());
+        }
 	}
 
 	@Override
-	public UsuarioEntity buscarUsuarioEmail(String email) {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException("Unimplemented method 'buscarUsuarioEmail'");
+	public UsuarioEntity buscarUsuarioEmail(String correo) {
+		try {
+            Optional<UsuarioEntity> usuarioOptional = usuarioRepository.findByCorreo(correo);
+
+            if (!usuarioOptional.isPresent()) {
+                throw new UsuarioException("El usuario no fue encontrado.");
+            }
+
+            return usuarioOptional.get();
+
+        } catch (Exception e) {
+            throw new RuntimeException("Error al guardar al usuario:" + e.getMessage());
+        }
 	}
 
 	@Override

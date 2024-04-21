@@ -77,4 +77,11 @@ public class UsuarioEntity {
     @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonIgnore
     private List<UsuarioCursoEntity> usuarioCursos;
+
+    @Override
+    public String toString() {
+        return "{ id=" + id + ", nombre=" + nombre + ", apellido=" + apellido + ", correo=" + correo + " }";
+    }
+
+    
 }
