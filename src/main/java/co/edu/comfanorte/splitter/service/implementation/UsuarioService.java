@@ -130,13 +130,15 @@ public class UsuarioService implements UsuarioInterface {
                     .map(UsuarioCursoEntity::getUsuario)
                     .collect(Collectors.toList());
 
-            if (usuarios.isEmpty()) {
-                throw new UsuarioException("No hay usuarios registrados");
-            }
+            
             // Filtrar los usuarios por el rol deseado (en este caso, rol con ID 2)
             List<UsuarioEntity> estudiantes = usuarios.stream()
                     .filter(usuario -> usuario.getRol().getId() == 2)
                     .collect(Collectors.toList());
+
+            if (estudiantes.isEmpty()) {
+                        throw new UsuarioException("No hay estudiantes en este curso");
+            }
 
             return estudiantes;
         } catch (Exception e) {
