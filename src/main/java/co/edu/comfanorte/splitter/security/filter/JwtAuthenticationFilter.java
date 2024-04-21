@@ -5,6 +5,7 @@ import com.fasterxml.jackson.core.exc.StreamReadException;
 import com.fasterxml.jackson.databind.DatabindException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import co.edu.comfanorte.splitter.model.dto.ResponseDTO;
 import co.edu.comfanorte.splitter.model.entity.UsuarioEntity;
 import co.edu.comfanorte.splitter.security.jwt.JwtUtil;
 import jakarta.servlet.FilterChain;
@@ -78,5 +79,16 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         response.getWriter().flush();
 
         super.successfulAuthentication(request, response, chain, authResult);
+    }
+
+    @Override
+    protected void unsuccessfulAuthentication(HttpServletRequest request,
+                                              HttpServletResponse response,
+                                              AuthenticationException failed) throws IOException, ServletException {
+        response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+        response.setStatus(HttpStatus.UNAUTHORIZED.value());
+
+        ResponseDTO responseDTO = new ResponseDTO("error", "Correo o contraseña invalidos.");
+        response.getWriter().write(new ObjectMapper().writeValueAsString(responseDTO));
     }
 }

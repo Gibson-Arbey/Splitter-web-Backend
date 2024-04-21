@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import co.edu.comfanorte.splitter.model.dto.ContrasenaDTO;
+import co.edu.comfanorte.splitter.model.dto.ResponseDTO;
 import co.edu.comfanorte.splitter.model.dto.UsuarioDTO;
 import co.edu.comfanorte.splitter.model.entity.UsuarioEntity;
 import co.edu.comfanorte.splitter.service.implementation.UsuarioService;
@@ -37,39 +38,39 @@ public class UsuarioController {
 
     @PostMapping("/guardarEstudiante")
     @PreAuthorize("hasAuthority('ROL_PROFESOR')")
-    public ResponseEntity<String> guardarEstudiante(@Valid @RequestBody UsuarioDTO usuarioDTO) {
+    public ResponseEntity<ResponseDTO> guardarEstudiante(@Valid @RequestBody UsuarioDTO usuarioDTO) {
         try {
             UsuarioEntity usuarioEntity = new UsuarioEntity();
             BeanUtils.copyProperties(usuarioDTO, usuarioEntity);
             usuarioEntity.setContrasena(passwordEncoder.encode(usuarioDTO.getContrasenaDesencriptada()));
             usuarioService.guardarUsuario(usuarioEntity, usuarioDTO.getCurso());
-            String response = "Estudiante registrado con exito.";
-            return ResponseEntity.ok().body("{\n \"type\": \"success\" \n \"msg\": \""+ response + "\"\n}");
+
+            return ResponseEntity.ok().body(new ResponseDTO("success", "Estudiante registrado con exito."));
         } catch (Exception e) {
-            return ResponseEntity.badRequest().body("{\n \"type\": \"error\" \n \"msg\": \""+ e.getMessage() + "\"\n}");
+            return ResponseEntity.badRequest().body(new ResponseDTO("error", e.getMessage()));
         }
     }
 
     @GetMapping("/detalle")
     @PreAuthorize("hasAuthority('ROL_PROFESOR')")
-    public ResponseEntity<Object> detalleUsuario(@RequestParam(value = "correo" , required = true) String correo) {
+    public ResponseEntity<ResponseDTO> detalleUsuario(@RequestParam(value = "correo" , required = true) String correo) {
         try {
             UsuarioEntity usuarioEntity = usuarioService.buscarUsuarioEmail(correo);
-            return ResponseEntity.ok().body("{\n \"type\": \"success\" \n \"msg\": "+ usuarioEntity.toString() + "\n}");
+            return ResponseEntity.ok().body(new ResponseDTO("success", usuarioEntity.toString()));
         } catch (Exception e) {
-            return ResponseEntity.badRequest().body("{\n \"type\": \"error\" \n \"msg\": \""+ e.getMessage() + "\"\n}");
+            return ResponseEntity.badRequest().body(new ResponseDTO("error", e.getMessage()));
         }
     }
 
     @PutMapping("/cambiar")
     @PreAuthorize("hasAuthority('ROL_PROFESOR')")
-    public ResponseEntity<Object> cambiarContraseña(@Valid @RequestBody ContrasenaDTO contrasenaDTO) {
+    public ResponseEntity<ResponseDTO> cambiarContraseña(@Valid @RequestBody ContrasenaDTO contrasenaDTO) {
         try {
             String contrasenaEncriptada = passwordEncoder.encode(contrasenaDTO.getContrasena());
             usuarioService.cambiarContrasenia(contrasenaDTO.getId(), contrasenaEncriptada);
-            return ResponseEntity.ok().body("{\n \"type\": \"success\" \n \"msg\": "+ "\"Contraseña cambiada exitosamente\"" + "\n}");
+            return ResponseEntity.ok().body(new ResponseDTO("success", "Contraseña cambiada exitosamente."));
         } catch (Exception e) {
-            return ResponseEntity.badRequest().body("{\n \"type\": \"error\" \n \"msg\": \""+ e.getMessage() + "\"\n}");
+            return ResponseEntity.badRequest().body(new ResponseDTO("error", e.getMessage()));
         }
     }
 

@@ -10,43 +10,59 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import co.edu.comfanorte.splitter.model.dto.ResponseDTO;
+
 @RestControllerAdvice
 public class RestExceptionHandler {
 
     @ExceptionHandler(value = { UsuarioException.class })
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ResponseEntity<String> handleUsuarioException(UsuarioException ex) {
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
+    public ResponseEntity<ResponseDTO> handleUsuarioException(UsuarioException ex) {
+        return ResponseEntity.badRequest().body(new ResponseDTO("error", ex.getMessage()));
+    }
+
+    @ExceptionHandler(value = { CursoException.class })
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ResponseEntity<ResponseDTO> handleCursoException(UsuarioException ex) {
+        return ResponseEntity.badRequest().body(new ResponseDTO("error", ex.getMessage()));
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ResponseBody
-    public ResponseEntity<String> handleValidationExceptions(MethodArgumentNotValidException ex) {
+    public ResponseEntity<ResponseDTO> handleValidationExceptions(MethodArgumentNotValidException ex) {
         StringBuilder errors = new StringBuilder();
         ex.getBindingResult().getAllErrors().forEach(error -> {
             String errorMessage = error.getDefaultMessage();
             errors.append(errorMessage).append(" ");
         });
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
-                "{\n \"type\": \"error\" \n \"msg\": \"" + errors.toString().trim() + "\"\n}");
+            new ResponseDTO("error", errors.toString().trim()));
     }
 
     @ExceptionHandler(AccessDeniedException.class)
     @ResponseStatus(HttpStatus.FORBIDDEN)
     @ResponseBody
-    public ResponseEntity<String> handleAccessDeniedException(AccessDeniedException ex) {
+    public ResponseEntity<ResponseDTO> handleAccessDeniedException(AccessDeniedException ex) {
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body(
-                "{\n \"type\": \"error\" \n \"msg\": \"" + "Acceso denegado." + "\"\n}");
+            new ResponseDTO("error", "Acceso denegado."));
     }
 
     @ExceptionHandler(MissingServletRequestParameterException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ResponseBody
-    public ResponseEntity<String> handleMissingServletRequestParameterException(
+    public ResponseEntity<ResponseDTO> handleMissingServletRequestParameterException(
             MissingServletRequestParameterException ex) {
-        String errorMessage = "Required parameter '" + ex.getParameterName() + "' is not present.";
+        String errorMessage = "Parametro requerido '" + ex.getParameterName() + "' no presente.";
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
-                "{\n \"type\": \"error\" \n \"msg\": \"" + errorMessage + "\"\n}");
+            new ResponseDTO("error", errorMessage));
+    }
+
+    @ExceptionHandler(Exception.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ResponseBody
+    public ResponseEntity<ResponseDTO> handleException( Exception ex) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
+            new ResponseDTO("error", ex.getMessage()));
     }
 }
