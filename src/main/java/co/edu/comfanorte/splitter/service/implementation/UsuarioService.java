@@ -56,12 +56,13 @@ public class UsuarioService implements UsuarioInterface{
 
 	@Override
     @Transactional(rollbackFor = Exception.class)
-	public void guardarUsuario(UsuarioEntity usuarioEntity, String curso) {
-		if (usuarioRepository.findByCorreo(usuarioEntity.getCorreo()).isPresent()) {
-            throw new UsuarioException("El correo electronico ya existe.");
-        }
-        
+	public void guardarUsuario(UsuarioEntity usuarioEntity, String curso) {  
         try {
+
+            if (usuarioRepository.findByCorreo(usuarioEntity.getCorreo()).isPresent()) {
+                throw new UsuarioException("El correo electronico ya esta registrado.");
+            }
+
             //Guardar estudiante
             usuarioEntity.setRol(rolRepository.findByNombre("ROL_ESTUDIANTE"));
             UsuarioEntity usuarioDB = usuarioRepository.save(usuarioEntity);
@@ -84,7 +85,7 @@ public class UsuarioService implements UsuarioInterface{
             usuarioCurso.setCurso(cursoOptional.get());
             usuarioCursoRepository.save(usuarioCurso);
         } catch (Exception e) {
-            throw new RuntimeException("Error al guardar al usuario:" + e.getMessage());
+            throw new RuntimeException(e.getMessage());
         }
 	}
 
@@ -100,7 +101,7 @@ public class UsuarioService implements UsuarioInterface{
             usuarioEntity.setContrasena(contrasena);
             usuarioRepository.save(usuarioEntity);
         } catch (Exception e) {
-            throw new RuntimeException("Error al cambiar contraseña:" + e.getMessage());
+            throw new RuntimeException(e.getMessage());
         }
 	}
 
@@ -116,7 +117,7 @@ public class UsuarioService implements UsuarioInterface{
             return usuarioOptional.get();
 
         } catch (Exception e) {
-            throw new RuntimeException("Error al guardar al usuario:" + e.getMessage());
+            throw new RuntimeException(e.getMessage());
         }
 	}
 
