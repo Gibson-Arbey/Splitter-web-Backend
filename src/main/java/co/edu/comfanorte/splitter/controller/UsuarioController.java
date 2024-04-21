@@ -9,7 +9,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -17,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import co.edu.comfanorte.splitter.model.dto.ContrasenaDTO;
 import co.edu.comfanorte.splitter.model.dto.UsuarioDTO;
 import co.edu.comfanorte.splitter.model.entity.UsuarioEntity;
 import co.edu.comfanorte.splitter.service.implementation.UsuarioService;
@@ -61,15 +61,12 @@ public class UsuarioController {
         }
     }
 
-    @PutMapping("/cambiar/{id}")
+    @PutMapping("/cambiar")
     @PreAuthorize("hasAuthority('ROL_PROFESOR')")
-    public ResponseEntity<Object> cambiarContraseña(@PathVariable("id") Integer id, @RequestBody String contrasena) {
+    public ResponseEntity<Object> cambiarContraseña(@Valid @RequestBody ContrasenaDTO contrasenaDTO) {
         try {
-            if(contrasena == null || contrasena.length() < 8) {
-                return ResponseEntity.badRequest().body("{\n \"type\": \"error\" \n \"msg\": \"La contraseña debe tener minimo 8 caracteres.\"\n}");  
-            }
-            String contrasenaEncriptada = passwordEncoder.encode(contrasena);
-            usuarioService.cambiarContrasenia(id, contrasenaEncriptada);
+            String contrasenaEncriptada = passwordEncoder.encode(contrasenaDTO.getContrasena());
+            usuarioService.cambiarContrasenia(contrasenaDTO.getId(), contrasenaEncriptada);
             return ResponseEntity.ok().body("{\n \"type\": \"success\" \n \"msg\": "+ "\"Contraseña cambiada exitosamente\"" + "\n}");
         } catch (Exception e) {
             return ResponseEntity.badRequest().body("{\n \"type\": \"error\" \n \"msg\": \""+ e.getMessage() + "\"\n}");
