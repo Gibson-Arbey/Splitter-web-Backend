@@ -64,6 +64,7 @@ public class UsuarioEntity {
      * contraseña encriptada del usuario
      */
     @Column(nullable = false, length = 255)
+    @JsonIgnore
     @NotEmpty
     private String contrasena;
 

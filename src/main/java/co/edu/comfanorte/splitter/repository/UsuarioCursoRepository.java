@@ -10,6 +10,6 @@ import co.edu.comfanorte.splitter.model.entity.UsuarioCursoKey;
 @Repository
 public interface UsuarioCursoRepository extends JpaRepository<UsuarioCursoEntity, UsuarioCursoKey> {
     
-    // @Query("SELECT c FROM curso c JOIN c.usuario_curso uc WHERE uc.usuario_id = :usuarioId")
     List<UsuarioCursoEntity> findByUsuarioId(Integer usuarioId);
+    List<UsuarioCursoEntity> findByCurso_Nombre(String nombreCurso);
 }
