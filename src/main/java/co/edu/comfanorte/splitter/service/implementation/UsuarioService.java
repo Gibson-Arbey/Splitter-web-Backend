@@ -3,6 +3,7 @@ package co.edu.comfanorte.splitter.service.implementation;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
@@ -25,20 +26,20 @@ import co.edu.comfanorte.splitter.repository.UsuarioRepository;
 import co.edu.comfanorte.splitter.service.interfaces.UsuarioInterface;
 
 @Service
-public class UsuarioService implements UsuarioInterface{
+public class UsuarioService implements UsuarioInterface {
 
     @Autowired
-    private  UsuarioRepository usuarioRepository;
-    
+    private UsuarioRepository usuarioRepository;
+
     @Autowired
-    private  RolRepository rolRepository;
+    private RolRepository rolRepository;
 
     @Autowired
     private CursoRepository cursoRepository;
 
     @Autowired
     private UsuarioCursoRepository usuarioCursoRepository;
-    
+
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         UsuarioEntity userEntity = usuarioRepository.findByCorreo(username)
@@ -54,31 +55,31 @@ public class UsuarioService implements UsuarioInterface{
         return new User(userEntity.getCorreo(), userEntity.getContrasena(), authorities);
     }
 
-	@Override
+    @Override
     @Transactional(rollbackFor = Exception.class)
-	public void guardarUsuario(UsuarioEntity usuarioEntity, String curso) {  
+    public void guardarUsuario(UsuarioEntity usuarioEntity, String curso) {
         try {
 
             if (usuarioRepository.findByCorreo(usuarioEntity.getCorreo()).isPresent()) {
                 throw new UsuarioException("El correo electronico ya esta registrado.");
             }
 
-            //Guardar estudiante
+            // Guardar estudiante
             usuarioEntity.setRol(rolRepository.findByNombre("ROL_ESTUDIANTE"));
             UsuarioEntity usuarioDB = usuarioRepository.save(usuarioEntity);
 
-            //Buscar curso
+            // Buscar curso
             Optional<CursoEntity> cursoOptional = cursoRepository.findByNombre(curso);
             if (!cursoOptional.isPresent()) {
                 throw new UsuarioException("El curso no fue encontrado.");
             }
 
-            //Crear llave primaria UsuarioCurso
+            // Crear llave primaria UsuarioCurso
             UsuarioCursoKey usuarioCursoKey = new UsuarioCursoKey();
             usuarioCursoKey.setUsuarioId(usuarioDB.getId());
             usuarioCursoKey.setCursoId(cursoOptional.get().getId());
 
-            //Guardar relacion UsuarioCurso
+            // Guardar relacion UsuarioCurso
             UsuarioCursoEntity usuarioCurso = new UsuarioCursoEntity();
             usuarioCurso.setId(usuarioCursoKey);
             usuarioCurso.setUsuario(usuarioEntity);
@@ -87,15 +88,15 @@ public class UsuarioService implements UsuarioInterface{
         } catch (Exception e) {
             throw new RuntimeException(e.getMessage());
         }
-	}
+    }
 
-	@Override
-	public void cambiarContrasenia(Integer id, String contrasena) {
-		try {
+    @Override
+    public void cambiarContrasenia(Integer id, String contrasena) {
+        try {
             Optional<UsuarioEntity> usuarioOptional = usuarioRepository.findById(id);
 
             if (!usuarioOptional.isPresent()) {
-            throw new UsuarioException("El usuario no fue encontrado.");
+                throw new UsuarioException("El usuario no fue encontrado.");
             }
             UsuarioEntity usuarioEntity = usuarioOptional.get();
             usuarioEntity.setContrasena(contrasena);
@@ -103,11 +104,11 @@ public class UsuarioService implements UsuarioInterface{
         } catch (Exception e) {
             throw new RuntimeException(e.getMessage());
         }
-	}
+    }
 
-	@Override
-	public UsuarioEntity buscarUsuarioEmail(String correo) {
-		try {
+    @Override
+    public UsuarioEntity buscarUsuarioEmail(String correo) {
+        try {
             Optional<UsuarioEntity> usuarioOptional = usuarioRepository.findByCorreo(correo);
 
             if (!usuarioOptional.isPresent()) {
@@ -119,12 +120,28 @@ public class UsuarioService implements UsuarioInterface{
         } catch (Exception e) {
             throw new RuntimeException(e.getMessage());
         }
-	}
+    }
 
-	@Override
-	public List<UsuarioEntity> listarEstudiantes() {
-		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException("Unimplemented method 'listarEstudiantes'");
-	}
-    
+    @Override
+    public List<UsuarioEntity> listarEstudiantes(String curso) {
+        try {
+            List<UsuarioEntity> usuarios = usuarioCursoRepository.findByCurso_Nombre(curso)
+                    .stream()
+                    .map(UsuarioCursoEntity::getUsuario)
+                    .collect(Collectors.toList());
+
+            if (usuarios.isEmpty()) {
+                throw new UsuarioException("No hay usuarios registrados");
+            }
+            // Filtrar los usuarios por el rol deseado (en este caso, rol con ID 2)
+            List<UsuarioEntity> estudiantes = usuarios.stream()
+                    .filter(usuario -> usuario.getRol().getId() == 2)
+                    .collect(Collectors.toList());
+
+            return estudiantes;
+        } catch (Exception e) {
+            throw new RuntimeException(e.getMessage());
+        }
+    }
+
 }

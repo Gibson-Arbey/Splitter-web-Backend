@@ -11,5 +11,5 @@ public interface UsuarioInterface extends UserDetailsService{
 
     public UsuarioEntity buscarUsuarioEmail(String correo);
 
-    public List<UsuarioEntity> listarEstudiantes();
+    public List<UsuarioEntity> listarEstudiantes(String curso);
 }
