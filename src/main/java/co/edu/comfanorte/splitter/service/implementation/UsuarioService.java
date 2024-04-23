@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import co.edu.comfanorte.splitter.exception.UsuarioException;
+import co.edu.comfanorte.splitter.model.dto.EstudiantesDTO;
 import co.edu.comfanorte.splitter.model.entity.CursoEntity;
 import co.edu.comfanorte.splitter.model.entity.UsuarioCursoEntity;
 import co.edu.comfanorte.splitter.model.entity.UsuarioCursoKey;
@@ -123,24 +124,33 @@ public class UsuarioService implements UsuarioInterface {
     }
 
     @Override
-    public List<UsuarioEntity> listarEstudiantes(String curso) {
+    public List<EstudiantesDTO> listarEstudiantes(String curso) {
         try {
             List<UsuarioEntity> usuarios = usuarioCursoRepository.findByCurso_Nombre(curso)
                     .stream()
                     .map(UsuarioCursoEntity::getUsuario)
-                    .collect(Collectors.toList());
-
-            
-            // Filtrar los usuarios por el rol deseado (en este caso, rol con ID 2)
-            List<UsuarioEntity> estudiantes = usuarios.stream()
                     .filter(usuario -> usuario.getRol().getId() == 2)
                     .collect(Collectors.toList());
 
-            if (estudiantes.isEmpty()) {
-                        throw new UsuarioException("No hay estudiantes en este curso");
+            if (usuarios.isEmpty()) {
+                throw new UsuarioException("No hay estudiantes en este curso");
             }
 
-            return estudiantes;
+            // Convertir lista de UsuarioEntity a lista de EstudiantesDTO dentro del método
+            List<EstudiantesDTO> estudiantesDTO = usuarios.stream()
+                    .map(usuario -> {
+                        EstudiantesDTO dto = new EstudiantesDTO();
+                        dto.setId(usuario.getId());
+                        dto.setNombre(usuario.getNombre());
+                        dto.setApellido(usuario.getApellido());
+                        dto.setCorreo(usuario.getCorreo());
+                        // Aquí debes establecer el valor del curso en el DTO según tus necesidades
+                        
+                        return dto;
+                    })
+                    .collect(Collectors.toList());
+
+            return estudiantesDTO;
         } catch (Exception e) {
             throw new RuntimeException(e.getMessage());
         }

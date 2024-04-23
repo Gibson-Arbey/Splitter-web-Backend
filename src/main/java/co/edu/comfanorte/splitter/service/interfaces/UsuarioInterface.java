@@ -1,6 +1,8 @@
 package co.edu.comfanorte.splitter.service.interfaces;
 import java.util.List;
 import org.springframework.security.core.userdetails.UserDetailsService;
+
+import co.edu.comfanorte.splitter.model.dto.EstudiantesDTO;
 import co.edu.comfanorte.splitter.model.entity.UsuarioEntity;
 
 public interface UsuarioInterface extends UserDetailsService{
@@ -11,5 +13,5 @@ public interface UsuarioInterface extends UserDetailsService{
 
     public UsuarioEntity buscarUsuarioEmail(String correo);
 
-    public List<UsuarioEntity> listarEstudiantes(String curso);
+    public List<EstudiantesDTO> listarEstudiantes(String curso);
 }

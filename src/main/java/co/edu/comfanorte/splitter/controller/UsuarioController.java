@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import co.edu.comfanorte.splitter.model.dto.ContrasenaDTO;
+import co.edu.comfanorte.splitter.model.dto.EstudiantesDTO;
 import co.edu.comfanorte.splitter.model.dto.ResponseDTO;
 import co.edu.comfanorte.splitter.model.dto.UsuarioDTO;
 import co.edu.comfanorte.splitter.model.entity.UsuarioEntity;
@@ -77,7 +78,7 @@ public class UsuarioController {
     @PreAuthorize("hasAuthority('ROL_PROFESOR')")
     public ResponseEntity<ResponseDTO> listarEstudiantes(@PathVariable(value = "curso" , required = true) String curso) {
         try {
-            List<UsuarioEntity> estudiantes = usuarioService.listarEstudiantes(curso);
+            List<EstudiantesDTO> estudiantes = usuarioService.listarEstudiantes(curso);
             return ResponseEntity.ok().body(new ResponseDTO("success", estudiantes));
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(new ResponseDTO("error", e.getMessage()));
