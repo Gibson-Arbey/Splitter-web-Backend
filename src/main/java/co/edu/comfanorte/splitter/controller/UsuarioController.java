@@ -1,4 +1,5 @@
 package co.edu.comfanorte.splitter.controller;
+
 import java.util.List;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +20,7 @@ import co.edu.comfanorte.splitter.model.dto.ContrasenaDTO;
 import co.edu.comfanorte.splitter.model.dto.EstudiantesDTO;
 import co.edu.comfanorte.splitter.model.dto.ResponseDTO;
 import co.edu.comfanorte.splitter.model.dto.UsuarioDTO;
+import co.edu.comfanorte.splitter.model.dto.UsuarioInfoDTO;
 import co.edu.comfanorte.splitter.model.entity.UsuarioEntity;
 import co.edu.comfanorte.splitter.service.implementation.UsuarioService;
 import jakarta.validation.Valid;
@@ -34,7 +36,6 @@ public class UsuarioController {
 
     @Autowired
     private PasswordEncoder passwordEncoder;
-
 
     @PostMapping("/guardarEstudiante")
     @PreAuthorize("hasAuthority('ROL_PROFESOR')")
@@ -53,10 +54,12 @@ public class UsuarioController {
 
     @GetMapping("/detalle")
     @PreAuthorize("hasAuthority('ROL_PROFESOR')")
-    public ResponseEntity<ResponseDTO> detalleUsuario(@RequestParam(value = "correo" , required = true) String correo) {
+    public ResponseEntity<ResponseDTO> detalleUsuario(@RequestParam(value = "correo", required = true) String correo) {
         try {
             UsuarioEntity usuarioEntity = usuarioService.buscarUsuarioEmail(correo);
-            return ResponseEntity.ok().body(new ResponseDTO("success", usuarioEntity.toString()));
+            UsuarioInfoDTO usuarioInfoDTO = new UsuarioInfoDTO(usuarioEntity.getId(), usuarioEntity.getNombre(),
+                    usuarioEntity.getApellido(), usuarioEntity.getCorreo());
+            return ResponseEntity.ok().body(new ResponseDTO("success", usuarioInfoDTO));
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(new ResponseDTO("error", e.getMessage()));
         }
@@ -76,7 +79,7 @@ public class UsuarioController {
 
     @GetMapping("/{curso}")
     @PreAuthorize("hasAuthority('ROL_PROFESOR')")
-    public ResponseEntity<ResponseDTO> listarEstudiantes(@PathVariable(value = "curso" , required = true) String curso) {
+    public ResponseEntity<ResponseDTO> listarEstudiantes(@PathVariable(value = "curso", required = true) String curso) {
         try {
             List<EstudiantesDTO> estudiantes = usuarioService.listarEstudiantes(curso);
             return ResponseEntity.ok().body(new ResponseDTO("success", estudiantes));

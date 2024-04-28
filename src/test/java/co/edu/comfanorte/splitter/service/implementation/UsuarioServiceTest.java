@@ -1,6 +1,7 @@
 package co.edu.comfanorte.splitter.service.implementation;
 
 import co.edu.comfanorte.splitter.model.entity.UsuarioEntity;
+import co.edu.comfanorte.splitter.repository.RolRepository;
 import co.edu.comfanorte.splitter.repository.UsuarioRepository;
 
 import org.junit.jupiter.api.Test;
@@ -23,6 +24,9 @@ public class UsuarioServiceTest {
 
     @Mock
     private UsuarioRepository usuarioRepository;
+
+    @Mock
+    private RolRepository rolRepository;
 
     @Test
     public void testBuscarUsuarioEmail() {
