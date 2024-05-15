@@ -26,9 +26,8 @@ import co.edu.comfanorte.splitter.service.implementation.UsuarioService;
 import jakarta.validation.Valid;
 
 @RestController
-@RequestMapping("/usuario")
+@RequestMapping("/splitter/v1/usuario")
 @Validated
-@CrossOrigin(origins = "*")
 public class UsuarioController {
 
     @Autowired

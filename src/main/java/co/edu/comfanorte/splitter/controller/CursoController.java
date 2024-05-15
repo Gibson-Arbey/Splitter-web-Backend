@@ -15,9 +15,8 @@ import co.edu.comfanorte.splitter.model.entity.CursoEntity;
 import co.edu.comfanorte.splitter.service.implementation.CursoService;
 
 @RestController
-@RequestMapping("/cursos")
+@RequestMapping("/splitter/v1/cursos")
 @Validated
-@CrossOrigin(origins = "*")
 public class CursoController {
 
     @Autowired
