@@ -20,12 +20,15 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.stereotype.Component;
 
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilter{
+
+public class JwtAuthenticationFilter /*extends UsernamePasswordAuthenticationFilter*/{
 
     private JwtUtil jwtUtil;
 
@@ -33,7 +36,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         this.jwtUtil = jwtUtil;
     }
     
-    @Override
+    /*@Override
     public Authentication attemptAuthentication(HttpServletRequest request,
                                                 HttpServletResponse response) throws AuthenticationException {
 
@@ -90,5 +93,5 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
         ResponseDTO responseDTO = new ResponseDTO("error", "Correo o contraseña invalidos.");
         response.getWriter().write(new ObjectMapper().writeValueAsString(responseDTO));
-    }
+    }*/
 }
