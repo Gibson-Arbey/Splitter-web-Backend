@@ -83,5 +83,8 @@ public class UsuarioEntity {
         return "{ id=" + id + ", nombre=" + nombre + ", apellido=" + apellido + ", correo=" + correo + " }";
     }
 
+    @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
+    private List<ResultadoEntity> resultados;
     
 }
