@@ -27,7 +27,7 @@ public class TemaController {
     private TemaInterface service;
 
     @GetMapping("/all")
-    @PreAuthorize("hasAuthority('ROL_PROFESOR')")
+    @PreAuthorize("hasAnyAuthority('ROL_PROFESOR', 'ROL_ESTUDIANTE')")
     public ResponseEntity<List<TemaDTO>> detalleUsuario() {
         try {
             List<TemaDTO> results = service.getTemas()

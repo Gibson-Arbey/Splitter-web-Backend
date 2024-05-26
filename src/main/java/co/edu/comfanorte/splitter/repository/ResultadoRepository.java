@@ -12,6 +12,6 @@ import java.util.List;
 @Repository
 public interface ResultadoRepository extends JpaRepository<ResultadoEntity, Integer> {
 
-    @Query("SELECT r from ResultadoEntity r WHERE r.tema.nombre=:nombreTema and r.usuario.nombre=:usename")
-    List<ResultadoEntity> findByUserAndTema(@Param("nombreTema") String nombreTema, @Param("usename") String username);
+    @Query("SELECT r from ResultadoEntity r WHERE r.tema.id=:idTema and r.usuario.id=:idUser")
+    List<ResultadoEntity> findByUserAndTema(@Param("idTema") Integer idTema, @Param("idUser") Integer idUser);
 }

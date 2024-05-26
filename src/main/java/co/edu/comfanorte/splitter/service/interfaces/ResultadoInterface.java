@@ -9,5 +9,5 @@ public interface ResultadoInterface {
 
     void registerResult(ResultadoDTO resultado);
 
-    List<ResultadoEntity> getResults(String nombreTema, String username);
+    List<ResultadoEntity> getResults(Integer nombreTema, Integer username);
 }

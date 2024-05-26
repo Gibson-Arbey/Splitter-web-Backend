@@ -7,8 +7,8 @@ import lombok.Setter;
 @Getter
 @Setter
 public class GetResutsDTO {
-    @NotNull(message = "Username no puede ir null")
-    private String userName;
-    @NotNull(message = "Tema no puede ir null")
-    private String tema;
+    @NotNull(message = "id del usuario no puede ir null")
+    private Integer idUser;
+    @NotNull(message = "id del Tema no puede ir null")
+    private Integer idTema;
 }

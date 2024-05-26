@@ -25,7 +25,7 @@ public class ResultadoController {
     private ResultadoInterface service;
 
     @PostMapping("/guardarResultado")
-    @PreAuthorize("hasAuthority('ROL_PROFESOR')")
+    @PreAuthorize("hasAnyAuthority('ROL_PROFESOR', 'ROL_ESTUDIANTE')")
     public ResponseEntity<ResponseDTO> guardarResultado(@Valid @RequestBody ResultadoDTO resultadoDTO) {
         try {
             service.registerResult(resultadoDTO);
@@ -36,10 +36,10 @@ public class ResultadoController {
     }
 
     @GetMapping("/results")
-    @PreAuthorize("hasAuthority('ROL_PROFESOR')")
+    @PreAuthorize("hasAnyAuthority('ROL_PROFESOR', 'ROL_ESTUDIANTE')")
     public ResponseEntity<List<ResultadosDTO>> detalleUsuario(@RequestBody @Valid GetResutsDTO getResutsDTO) {
         try {
-            List<ResultadosDTO> results = service.getResults(getResutsDTO.getTema(), getResutsDTO.getUserName())
+            List<ResultadosDTO> results = service.getResults(getResutsDTO.getIdTema(), getResutsDTO.getIdUser())
                     .stream().map(ObjectMapper::fromEntityToDto).collect(Collectors.toList());
             return ResponseEntity.ok().body(results);
         } catch (Exception e) {

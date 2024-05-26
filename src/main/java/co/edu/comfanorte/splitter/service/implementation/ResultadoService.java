@@ -34,7 +34,7 @@ public class ResultadoService implements ResultadoInterface {
     }
 
     @Override
-    public List<ResultadoEntity> getResults(String nombreTema, String username) {
+    public List<ResultadoEntity> getResults(Integer nombreTema, Integer username) {
         return repository.findByUserAndTema(nombreTema, username);
     }
 }
