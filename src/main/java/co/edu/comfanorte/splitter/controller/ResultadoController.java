@@ -46,4 +46,16 @@ public class ResultadoController {
             return ResponseEntity.internalServerError().body(null);
         }
     }
+
+    @GetMapping("/results/user/{idUser}")
+    @PreAuthorize("hasAnyAuthority('ROL_PROFESOR', 'ROL_ESTUDIANTE')")
+    public ResponseEntity<List<ResultadosDTO>> getResultsByUser(@PathVariable("idUser") Integer idUser) {
+        try {
+            List<ResultadosDTO> results = service.getResultsByUser(idUser)
+                    .stream().map(ObjectMapper::fromEntityToDto).collect(Collectors.toList());
+            return ResponseEntity.ok().body(results);
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().body(null);
+        }
+    }
 }

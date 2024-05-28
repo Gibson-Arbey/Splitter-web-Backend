@@ -52,7 +52,7 @@ public class UsuarioController {
     }
 
     @GetMapping("/detalle")
-    @PreAuthorize("hasAuthority('ROL_PROFESOR')")
+    @PreAuthorize("hasAnyAuthority('ROL_PROFESOR', 'ROL_ESTUDIANTE')")
     public ResponseEntity<ResponseDTO> detalleUsuario(@RequestParam(value = "correo", required = true) String correo) {
         try {
             UsuarioEntity usuarioEntity = usuarioService.buscarUsuarioEmail(correo);

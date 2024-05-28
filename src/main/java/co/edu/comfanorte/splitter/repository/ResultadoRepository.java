@@ -14,4 +14,7 @@ public interface ResultadoRepository extends JpaRepository<ResultadoEntity, Inte
 
     @Query("SELECT r from ResultadoEntity r WHERE r.tema.id=:idTema and r.usuario.id=:idUser")
     List<ResultadoEntity> findByUserAndTema(@Param("idTema") Integer idTema, @Param("idUser") Integer idUser);
+
+    @Query("SELECT r from ResultadoEntity  r WHERE r.usuario.id=:userId")
+    List<ResultadoEntity> findAllByUser(@Param("userId") Integer userId);
 }

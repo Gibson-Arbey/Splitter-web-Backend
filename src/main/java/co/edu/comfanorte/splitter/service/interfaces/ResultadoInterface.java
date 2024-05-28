@@ -10,4 +10,6 @@ public interface ResultadoInterface {
     void registerResult(ResultadoDTO resultado);
 
     List<ResultadoEntity> getResults(Integer nombreTema, Integer username);
+
+    List<ResultadoEntity> getResultsByUser(Integer userId);
 }
