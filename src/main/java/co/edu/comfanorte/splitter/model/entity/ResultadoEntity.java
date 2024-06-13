@@ -2,6 +2,9 @@ package co.edu.comfanorte.splitter.model.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
+
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
@@ -26,4 +29,7 @@ public class ResultadoEntity {
 
     @Column(name = "puntaje")
     private float puntaje;
+
+    @CreationTimestamp
+    private LocalDateTime createdDate;
 }

@@ -8,6 +8,7 @@ import co.edu.comfanorte.splitter.util.ObjectMapper;
 import jakarta.validation.Valid;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.repository.query.Param;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
@@ -37,9 +38,9 @@ public class ResultadoController {
 
     @GetMapping("/results")
     @PreAuthorize("hasAnyAuthority('ROL_PROFESOR', 'ROL_ESTUDIANTE')")
-    public ResponseEntity<List<ResultadosDTO>> detalleUsuario(@RequestBody @Valid GetResutsDTO getResutsDTO) {
+    public ResponseEntity<List<ResultadosDTO>> detalleUsuario(@RequestParam(name="idTema") int idTema, @RequestParam(name="idUser") int idUser) {
         try {
-            List<ResultadosDTO> results = service.getResults(getResutsDTO.getIdTema(), getResutsDTO.getIdUser())
+            List<ResultadosDTO> results = service.getResults(idTema, idUser)
                     .stream().map(ObjectMapper::fromEntityToDto).collect(Collectors.toList());
             return ResponseEntity.ok().body(results);
         } catch (Exception e) {

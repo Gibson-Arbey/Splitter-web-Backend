@@ -17,4 +17,7 @@ public interface ResultadoRepository extends JpaRepository<ResultadoEntity, Inte
 
     @Query("SELECT r from ResultadoEntity  r WHERE r.usuario.id=:userId")
     List<ResultadoEntity> findAllByUser(@Param("userId") Integer userId);
+
+    @Query("SELECT r FROM ResultadoEntity r WHERE YEAR(r.createdDate) = :year ORDER BY r.tema")
+    List<ResultadoEntity> findAllOrderBy(@Param("year") int year);
 }
